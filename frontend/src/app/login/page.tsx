@@ -47,12 +47,6 @@ export default function LoginPage() {
                     animate={{ opacity: 1, scale: 1 }}
                     className="w-full max-w-md glass-panel p-6 sm:p-10 rounded-[2rem] sm:rounded-[2.5rem] shadow-2xl"
                 >
-                    <div className="flex flex-col items-center mb-10 text-center">
-
-                        <h1 className="text-3xl font-clagio font-medium text-black tracking-[0.04em] leading-[1.1]">Client Portal</h1>
-                        <p className="text-sm text-black/50 mt-2 font-light">Access your exclusive legacy portfolio</p>
-                    </div>
-
                     <form className="space-y-6" onSubmit={handleSubmit}>
                         <div className="space-y-2">
                             <label className="text-[10px] uppercase tracking-[0.3em] text-black/40 font-medium ml-1">Email Identifier</label>

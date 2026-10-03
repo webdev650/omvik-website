@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, MapPin } from "lucide-react";
+import { ArrowLeft, MapPin, Calendar } from "lucide-react";
 
 interface ProjectHeroProps {
   name: string;
@@ -109,15 +109,37 @@ export default function ProjectHero({
             &ldquo;{tagline}&rdquo;
           </motion.p>
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.7 }}
-            transition={{ duration: 0.8, delay: 0.7 }}
-            className="flex items-center text-white/90 text-xs tracking-widest mt-6"
-          >
-            <MapPin size={14} className="mr-2 text-[#C5A059]" />
-            <span className="font-light">{locationName}</span>
-          </motion.div>
+          <div className="flex flex-wrap items-center gap-6 mt-6">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.9 }}
+              transition={{ duration: 0.8, delay: 0.7 }}
+              className="flex items-center text-white/90 text-xs tracking-widest"
+            >
+              <MapPin size={14} className="mr-2 text-[#C5A059]" />
+              <span className="font-light">{locationName}</span>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+            >
+              <Link
+                href={`/contact?project=${encodeURIComponent(name)}&type=site-visit`}
+                prefetch={true}
+              >
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="px-5 py-2.5 rounded-full bg-gradient-to-r from-[#fc4d00] to-[#052870] text-white font-clagio font-medium uppercase tracking-[0.2em] text-[10px] shadow-lg hover:shadow-xl transition-all flex items-center space-x-2 border border-white/20"
+                >
+                  <Calendar size={13} />
+                  <span>Book Site Visit</span>
+                </motion.button>
+              </Link>
+            </motion.div>
+          </div>
         </div>
       </div>
     </section>

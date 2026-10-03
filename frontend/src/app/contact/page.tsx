@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { MapPin, Phone, Mail, CheckCircle2, Loader2 } from "lucide-react";
+import { MapPin, Phone, Mail, CheckCircle2, Loader2, Calendar, Building2 } from "lucide-react";
 import api from "@/utils/api";
 import { toast } from "react-hot-toast";
 
@@ -19,35 +20,63 @@ const smooth = {
   ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
 };
 
-export default function ContactPage() {
+function ContactFormInner({ isMobile }: { isMobile: boolean }) {
+  const searchParams = useSearchParams();
+  const projectParam = searchParams.get("project") || searchParams.get("service") || "";
+  const typeParam = searchParams.get("type") || "";
+  const isSiteVisit = typeParam === "site-visit" || searchParams.get("action") === "site-visit";
+
   const [status, setStatus] = useState<
     "idle" | "submitting" | "success" | "error"
   >("idle");
-  const [isMobile, setIsMobile] = useState(false);
+
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     email: "",
     message: "",
+    subject: "",
     budgetRange: "",
     purchaseTimeline: "",
+    interestedIn: "",
   });
 
   useEffect(() => {
-    const checkMobile = () => setIsMobile(window.innerWidth < 768);
-    checkMobile();
-    window.addEventListener("resize", checkMobile);
-    return () => window.removeEventListener("resize", checkMobile);
-  }, []);
+    if (projectParam) {
+      const decodedProject = decodeURIComponent(projectParam);
+      const initialSubject = isSiteVisit
+        ? `Book Site Visit - ${decodedProject}`
+        : `Inquiry - ${decodedProject}`;
+      const initialMessage = isSiteVisit
+        ? `Hi OMVIK team, I would like to book a site visit for ${decodedProject}. Please contact me to confirm available dates.`
+        : `Hi OMVIK team, I am interested in ${decodedProject}. Please provide more details.`;
+
+      setFormData((prev) => ({
+        ...prev,
+        subject: prev.subject || initialSubject,
+        interestedIn: prev.interestedIn || decodedProject,
+        message: prev.message || initialMessage,
+      }));
+    } else if (isSiteVisit) {
+      setFormData((prev) => ({
+        ...prev,
+        subject: prev.subject || "Book Site Visit",
+        message: prev.message || "Hi OMVIK team, I would like to book a site visit. Please contact me to schedule.",
+      }));
+    }
+  }, [projectParam, isSiteVisit]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus("submitting");
 
     try {
-      await api.post("/contact", formData);
+      await api.post("/contact", {
+        ...formData,
+        subject: formData.subject || (isSiteVisit ? "Book Site Visit" : "General Inquiry"),
+      });
       setStatus("success");
-      toast.success("Inquiry sent successfully");
+      toast.success(isSiteVisit ? "Site Visit Request Sent!" : "Inquiry sent successfully");
 
       setTimeout(() => {
         setStatus("idle");
@@ -56,8 +85,10 @@ export default function ContactPage() {
           phone: "",
           email: "",
           message: "",
+          subject: "",
           budgetRange: "",
           purchaseTimeline: "",
+          interestedIn: "",
         });
       }, 5000);
     } catch (error: unknown) {
@@ -67,6 +98,114 @@ export default function ContactPage() {
       setTimeout(() => setStatus("idle"), 3000);
     }
   };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: isMobile ? 0 : -50, y: isMobile ? 40 : 0 }}
+      animate={{ opacity: 1, x: 0, y: 0 }}
+      transition={smooth}
+      className="relative p-6 sm:p-10 rounded-[2rem] bg-white/60 backdrop-blur-xl border border-white/40 shadow-xl"
+    >
+      {(projectParam || isSiteVisit) && (
+        <div className="mb-6 p-4 rounded-xl bg-gradient-to-r from-[#fc4d00]/10 via-[#C5A059]/10 to-[#052870]/10 border border-[#fc4d00]/30 flex items-center gap-3">
+          <div className="p-2.5 rounded-lg bg-gradient-to-br from-[#fc4d00] to-[#052870] text-white shadow-md">
+            {isSiteVisit ? <Calendar size={20} /> : <Building2 size={20} />}
+          </div>
+          <div>
+            <span className="text-[10px] uppercase tracking-widest font-clagio font-bold text-[#fc4d00] block">
+              {isSiteVisit ? "Book Site Visit Request" : "Project Inquiry"}
+            </span>
+            <p className="text-sm font-medium text-black">
+              {projectParam ? (
+                <>Target Project: <span className="font-semibold text-[#052870]">{decodeURIComponent(projectParam)}</span></>
+              ) : (
+                "Scheduling Site Visit Consultation"
+              )}
+            </p>
+          </div>
+        </div>
+      )}
+
+      <AnimatePresence mode="wait">
+        {status === "success" ? (
+          <motion.div
+            key="success"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="text-center py-16"
+          >
+            <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-[#fc4d00] to-[#052870] text-white rounded-full flex items-center justify-center shadow-lg">
+              <CheckCircle2 size={36} />
+            </div>
+
+            <h3 className="text-3xl font-medium mb-3">
+              {isSiteVisit ? "Site Visit Requested" : "Inquiry Sent"}
+            </h3>
+            <p className="text-black/60">We’ll contact you shortly to confirm details.</p>
+          </motion.div>
+        ) : (
+          <motion.form onSubmit={handleSubmit} className="space-y-6">
+            {(["name", "phone", "email"] as const).map((field) => (
+              <div key={field} className="relative">
+                <input
+                  required
+                  type={field === "email" ? "email" : field === "phone" ? "tel" : "text"}
+                  placeholder=" "
+                  value={formData[field]}
+                  onChange={(e) =>
+                    setFormData({ ...formData, [field]: e.target.value })
+                  }
+                  className="peer w-full px-5 pt-6 pb-3 rounded-xl bg-white/70 border border-black/10 focus:border-[#052870] outline-none transition-all"
+                />
+                <label className="absolute left-5 top-3 text-sm text-black/40 font-clagio uppercase tracking-wider text-[11px]">
+                  {field === "name" ? "FULL NAME *" : field === "phone" ? "PHONE NUMBER *" : "EMAIL ADDRESS *"}
+                </label>
+              </div>
+            ))}
+
+            <div className="relative">
+              <textarea
+                rows={4}
+                required
+                placeholder="Message..."
+                value={formData.message}
+                onChange={(e) =>
+                  setFormData({ ...formData, message: e.target.value })
+                }
+                className="w-full px-5 py-4 rounded-xl bg-white/70 border border-black/10 focus:border-[#052870] outline-none transition-all"
+              />
+            </div>
+
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              type="submit"
+              disabled={status === "submitting"}
+              className="w-full py-4 rounded-xl bg-gradient-to-r from-[#fc4d00] to-[#052870] text-white font-clagio font-medium uppercase tracking-[0.2em] text-xs shadow-lg hover:shadow-xl transition-all"
+            >
+              {status === "submitting" ? (
+                <Loader2 className="animate-spin mx-auto" />
+              ) : isSiteVisit ? (
+                "Confirm Site Visit Request"
+              ) : (
+                "Send Inquiry"
+              )}
+            </motion.button>
+          </motion.form>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+
+export default function ContactPage() {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   return (
     <main className="w-full min-h-screen bg-gradient-to-br from-[#FDFCFB] to-[#f5f3ef] relative overflow-hidden">
@@ -108,76 +247,14 @@ export default function ContactPage() {
 
         <div className="grid lg:grid-cols-2 gap-12">
 
-          {/* FORM */}
-          <motion.div
-            initial={{ opacity: 0, x: isMobile ? 0 : -50, y: isMobile ? 40 : 0 }}
-            animate={{ opacity: 1, x: 0, y: 0 }}
-            transition={smooth}
-            className="relative p-6 sm:p-10 rounded-[2rem] bg-white/60 backdrop-blur-xl border border-white/40 shadow-xl"
-          >
-            <AnimatePresence mode="wait">
-              {status === "success" ? (
-                <motion.div
-                  key="success"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="text-center py-16"
-                >
-                  <div className="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-[#fc4d00] to-[#052870] text-white rounded-full flex items-center justify-center">
-                    <CheckCircle2 size={36} />
-                  </div>
-
-                  <h3 className="text-3xl font-medium mb-3">Inquiry Sent</h3>
-                  <p className="text-black/60">We’ll contact you shortly.</p>
-                </motion.div>
-              ) : (
-                <motion.form onSubmit={handleSubmit} className="space-y-6">
-
-                  {["name", "phone", "email"].map((field, i) => (
-                    <div key={field} className="relative">
-                      <input
-                        required
-                        type="text"
-                        placeholder=" "
-                        value={(formData as any)[field]}
-                        onChange={(e) =>
-                          setFormData({ ...formData, [field]: e.target.value })
-                        }
-                        className="peer w-full px-5 pt-6 pb-3 rounded-xl bg-white/70 border border-black/10 focus:border-[#052870] outline-none"
-                      />
-                      <label className="absolute left-5 top-3 text-sm text-black/40">
-                        {field.toUpperCase()}
-                      </label>
-                    </div>
-                  ))}
-
-                  <textarea
-                    rows={4}
-                    required
-                    placeholder="Message..."
-                    value={formData.message}
-                    onChange={(e) =>
-                      setFormData({ ...formData, message: e.target.value })
-                    }
-                    className="w-full px-5 py-4 rounded-xl bg-white/70 border border-black/10"
-                  />
-
-                  <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    type="submit"
-                    disabled={status === "submitting"}
-                    className="w-full py-4 rounded-xl bg-gradient-to-r from-[#fc4d00] to-[#052870] text-white uppercase"
-                  >
-                    {status === "submitting" ? (
-                      <Loader2 className="animate-spin mx-auto" />
-                    ) : (
-                      "Send Inquiry"
-                    )}
-                  </motion.button>
-                </motion.form>
-              )}
-            </AnimatePresence>
-          </motion.div>
+          {/* FORM WRAPPED IN SUSPENSE */}
+          <Suspense fallback={
+            <div className="p-10 rounded-[2rem] bg-white/60 border border-white/40 flex justify-center items-center min-h-[350px]">
+              <Loader2 className="animate-spin text-[#052870]" size={36} />
+            </div>
+          }>
+            <ContactFormInner isMobile={isMobile} />
+          </Suspense>
 
           {/* INFO */}
           <motion.div
@@ -187,16 +264,14 @@ export default function ContactPage() {
           >
             <div className="p-8 rounded-[2rem] bg-white/60 backdrop-blur-xl border shadow-lg">
 
-              <h3 className="text-2xl mb-8 font-medium">Inquiry Sanctuary</h3>
-
-
+              <h3 className="text-2xl mb-8 font-medium font-clagio">Inquiry Sanctuary</h3>
 
               {/* ADDRESS */}
               <div className="flex items-start mb-8">
-                <MapPin className="mr-4 text-[#fc4d00]" />
+                <MapPin className="mr-4 text-[#fc4d00] shrink-0 mt-1" />
                 <div>
-                  <p className="font-medium">Old Town Office</p>
-                  <p className="text-sm text-black/70">
+                  <p className="font-medium font-clagio">Old Town Office</p>
+                  <p className="text-sm text-black/70 font-light">
                     Plot no-1967, Sriram Nagar,<br />
                     Old Town, Bhubaneswar,<br />
                     Odisha 751002
@@ -204,54 +279,45 @@ export default function ContactPage() {
                   <a
                     href="https://maps.google.com/?q=Plot no-1967, Sriram Nagar, Bhubaneswar"
                     target="_blank"
-                    className="text-blue-600 text-sm"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 text-sm font-medium mt-1 inline-block hover:underline"
                   >
                     View on Map →
                   </a>
                 </div>
               </div>
 
-
-
               {/* ADDRESS */}
               <div className="flex items-start mb-8">
-                <MapPin className="mr-4 text-[#fc4d00]" />
+                <MapPin className="mr-4 text-[#fc4d00] shrink-0 mt-1" />
                 <div>
-                  <p className="font-medium">Jagamara Office</p>
-                  <p className="text-sm text-black/70">
+                  <p className="font-medium font-clagio">Jagamara Office</p>
+                  <p className="text-sm text-black/70 font-light">
                     Plot no-B/32, Sidhivihar,<br />
-                     New Jagamara Road,<br />
+                    New Jagamara Road,<br />
                     Bhubaneswar, Odisha 751030
                   </p>
                   <a
                     href="https://maps.app.goo.gl/emUEDwbkmVQ3mshz7"
                     target="_blank"
-                    className="text-blue-600 text-sm"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 text-sm font-medium mt-1 inline-block hover:underline"
                   >
                     View on Map →
                   </a>
                 </div>
               </div>
 
-
-              
-
-
-
-              
-
-              
-
               {/* PHONE */}
               <div className="flex items-center mb-6">
-                <Phone className="mr-4 text-[#052870]" />
-                <a href="tel:7205922303">+91 7205922303</a>
+                <Phone className="mr-4 text-[#052870] shrink-0" />
+                <a href="tel:7205922303" className="hover:underline font-medium text-black/80">+91 7205922303</a>
               </div>
 
               {/* EMAIL */}
               <div className="flex items-center">
-                <Mail className="mr-4 text-gray-500" />
-                <span>omvikrealcon@gmail.com</span>
+                <Mail className="mr-4 text-gray-500 shrink-0" />
+                <span className="text-black/80">omvikrealcon@gmail.com</span>
               </div>
 
             </div>

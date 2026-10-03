@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { Phone, MessageSquare, Mail } from "lucide-react";
+import { Phone, MessageSquare, Mail, Calendar } from "lucide-react";
 
 interface ProjectContactProps {
   name: string;
@@ -12,16 +12,16 @@ interface ProjectContactProps {
 export default function ProjectContact({ name, contactNumber }: ProjectContactProps) {
   // Generate WhatsApp link with custom message
   const cleanNumber = contactNumber.replace(/\D/g, ""); // extract digits (e.g. 917205522303)
-  const whatsappUrl = `https://wa.me/${cleanNumber}?text=Hi%20OMVIK%20Team%2C%20I%20am%20interested%20in%20the%20${encodeURIComponent(
+  const whatsappUrl = `https://wa.me/${cleanNumber}?text=Hi%20OMVIK%20Team%2C%20I%20am%20interested%20in%20booking%20a%20site%20visit%20for%20the%20${encodeURIComponent(
     name
-  )}%20project.%20Please%20provide%20more%20details%20about%20availability%20and%20pricing.`;
+  )}%20project.%20Please%20provide%20more%20details.`;
 
   return (
     <section className="py-20 bg-[#0a1628] text-white relative overflow-hidden">
       {/* Background Texture */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.03)_0%,_transparent_75%)] pointer-events-none" />
 
-      <div className="relative z-10 max-w-4xl mx-auto px-6 text-center">
+      <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -39,7 +39,23 @@ export default function ProjectContact({ name, contactNumber }: ProjectContactPr
             Partner with OMVIK to secure your legacy home. Connect with our dedicated advisory team for a detailed brochure, pricing catalog, or private site viewing.
           </p>
 
-          <div className="pt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="pt-8 flex flex-col sm:flex-row items-center justify-center gap-4 flex-wrap">
+            {/* Book Site Visit CTA */}
+            <motion.div
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.98 }}
+              className="w-full sm:w-auto"
+            >
+              <Link
+                href={`/contact?project=${encodeURIComponent(name)}&type=site-visit`}
+                prefetch={true}
+                className="w-full px-8 py-4 rounded-full bg-gradient-to-r from-[#fc4d00] to-[#C5A059] text-white font-clagio font-medium uppercase tracking-[0.25em] text-[10px] hover:brightness-110 transition-all duration-500 shadow-xl flex items-center justify-center space-x-2 border border-white/10"
+              >
+                <Calendar size={14} />
+                <span>Book Site Visit</span>
+              </Link>
+            </motion.div>
+
             {/* Phone Call */}
             <motion.a
               whileHover={{ scale: 1.03 }}

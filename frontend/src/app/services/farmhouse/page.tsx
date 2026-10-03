@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, MapPin, LayoutDashboard, ArrowLeft } from "lucide-react";
+import { ArrowRight, MapPin, LayoutDashboard, ArrowLeft, Calendar } from "lucide-react";
 import { farmhouseProjects } from "@/utils/projectData";
 
 export default function FarmhouseServicePage() {
@@ -153,16 +153,25 @@ export default function FarmhouseServicePage() {
                         <span>{project.locationName}</span>
                       </div>
 
-                      <p className="text-white/60 text-xs sm:text-sm font-light line-clamp-2 mb-6">
+                      <p className="text-white/60 text-xs sm:text-sm font-light line-clamp-2 mb-4">
                         {project.description}
                       </p>
 
-                      <div className="flex items-center text-[10px] tracking-[0.3em] uppercase text-white/70 group-hover:text-white transition-colors duration-300 font-clagio font-medium">
-                        <span>Explore Project</span>
-                        <ArrowRight
-                          className="ml-2 group-hover:translate-x-1.5 transition-transform duration-300"
-                          size={12}
-                        />
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center text-[10px] tracking-[0.3em] uppercase text-white/70 group-hover:text-white transition-colors duration-300 font-clagio font-medium">
+                          <span>Explore Project</span>
+                          <ArrowRight
+                            className="ml-2 group-hover:translate-x-1.5 transition-transform duration-300"
+                            size={12}
+                          />
+                        </div>
+
+                        <span
+                          className="px-3 py-1.5 rounded-full bg-gradient-to-r from-[#fc4d00] to-[#052870] text-white text-[9px] uppercase tracking-widest font-clagio font-medium hover:brightness-110 transition-all flex items-center gap-1.5 shadow-md"
+                        >
+                          <Calendar size={11} />
+                          <span>Book Visit</span>
+                        </span>
                       </div>
                     </div>
 

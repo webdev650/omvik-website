@@ -4,7 +4,7 @@ import { use } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowLeft, ArrowRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, Calendar } from "lucide-react";
 
 type Params = Promise<{ id: string }>;
 
@@ -67,7 +67,7 @@ export default function ServiceDetail({ params }: { params: Params }) {
                                 <span className="text-white text-sm uppercase tracking-widest">Architectural Perspective</span>
                             </div>
                         </motion.div>
-                        <div className="flex flex-col justify-between space-y-8">
+                        <div className="flex flex-col justify-between space-y-6">
                             <div className="border-l-2 border-[#081F5C]/10 pl-8 space-y-4">
                                 <h3 className="text-xl font-clagio font-medium text-black tracking-[0.04em]">Project Highlights</h3>
                                 <ul className="space-y-4 text-black/70 font-light text-sm">
@@ -78,15 +78,29 @@ export default function ServiceDetail({ params }: { params: Params }) {
                                 </ul>
                             </div>
 
-                            <Link href="/contact" prefetch={true} className="block">
-                                <motion.button 
-                                    whileHover={{ scale: 1.02 }}
-                                    whileTap={{ scale: 0.98 }}
-                                    className="w-full py-5 rounded-2xl bg-black text-white font-clagio font-medium uppercase tracking-[0.3em] text-[10px] hover:bg-[#081F5C] transition-all duration-500 shadow-lg group flex items-center justify-center"
-                                >
-                                    Request Full Portfolio <ArrowRight size={14} className="ml-2 group-hover:translate-x-1 transition-transform" />
-                                </motion.button>
-                            </Link>
+                            <div className="space-y-3 pt-2">
+                                <Link href={`/contact?project=${encodeURIComponent(id)}&type=site-visit`} prefetch={true} className="block">
+                                    <motion.button 
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
+                                        className="w-full py-4 rounded-2xl bg-gradient-to-r from-[#fc4d00] to-[#081F5C] text-white font-clagio font-medium uppercase tracking-[0.25em] text-[10px] hover:brightness-110 transition-all duration-500 shadow-lg flex items-center justify-center space-x-2"
+                                    >
+                                        <Calendar size={14} />
+                                        <span>Book Site Visit</span>
+                                    </motion.button>
+                                </Link>
+
+                                <Link href={`/contact?project=${encodeURIComponent(id)}`} prefetch={true} className="block">
+                                    <motion.button 
+                                        whileHover={{ scale: 1.02 }}
+                                        whileTap={{ scale: 0.98 }}
+                                        className="w-full py-4 rounded-2xl bg-black text-white font-clagio font-medium uppercase tracking-[0.25em] text-[10px] hover:bg-black/80 transition-all duration-500 shadow-md group flex items-center justify-center"
+                                    >
+                                        <span>Request Full Portfolio</span>
+                                        <ArrowRight size={14} className="ml-2 group-hover:translate-x-1 transition-transform" />
+                                    </motion.button>
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </motion.div>
