@@ -19,7 +19,7 @@ interface FAQ {
 
 const testimonials: Testimonial[] = [
   {
-    text: "Partnering with OMVIK transformed our ancestral land in Patia into a thriving premium commercial space. Their legal transparency, end-to-end execution, and timely joint-venture returns exceeded all our expectations.",
+    text: "Partnering with OMVIK transformed our ancestral land in Patia into a thriving premium commercial space. Their legal transparency, end to end execution, and timely joint venture returns exceeded all our expectations.",
     name: "Ramesh Patnaik",
     role: "Landowner",
     location: "Patia, Bhubaneswar",
@@ -27,7 +27,7 @@ const testimonials: Testimonial[] = [
     highlight: "Unlocked True Land Potential"
   },
   {
-    text: "As an investor, transparency and regulatory compliance are non-negotiable. OMVIK delivered flawless execution from clear legal documentation to high-end project delivery. Absolutely reliable partners.",
+    text: "As an investor, transparency and regulatory compliance are non negotiable. OMVIK delivered flawless execution from clear legal documentation to high end project delivery. Absolutely reliable partners.",
     name: "Sunita Dash",
     role: "Real Estate Investor",
     location: "Bhubaneswar",
@@ -35,12 +35,12 @@ const testimonials: Testimonial[] = [
     highlight: "Unmatched Professionalism & Trust"
   },
   {
-    text: "OMVIK handled every aspect of development — architectural planning, approvals, and quality construction — without any upfront cost to us. They truly respect the landowner's long-term interest.",
+    text: "OMVIK handled every aspect of development, architectural planning, approvals, and quality construction without any upfront cost to us. They truly respect the landowner's long term interest.",
     name: "Anil Kumar Mohanty",
     role: "Property Owner",
     location: "Cuttack",
     rating: 5,
-    highlight: "Hassle-Free Joint Venture"
+    highlight: "Hassle Free Joint Venture"
   },
   {
     text: "They truly understand the heritage of our family estate. Their development vision seamlessly combined modern architectural excellence with maximum market valuation while keeping legalities crystal clear.",
@@ -59,7 +59,7 @@ const testimonials: Testimonial[] = [
     highlight: "Seamless Remote Partnership"
   },
   {
-    text: "OMVIK's strategic location planning and high-grade construction quality turned our underutilized commercial parcel into a landmark destination with exceptional, recurring yields.",
+    text: "OMVIK's strategic location planning and high grade construction quality turned our underutilized commercial parcel into a landmark destination with exceptional, recurring yields.",
     name: "Anita Rao",
     role: "Commercial Partner",
     location: "Jaydev Vihar",
@@ -67,7 +67,7 @@ const testimonials: Testimonial[] = [
     highlight: "Maximised Market Yields"
   },
   {
-    text: "From day one, the revenue-sharing model and construction milestones were explicitly documented and strictly followed. OMVIK is easily the most trustworthy land developer in Odisha.",
+    text: "From day one, the revenue sharing model and construction milestones were explicitly documented and strictly followed. OMVIK is easily the most trustworthy land developer in Odisha.",
     name: "Rajesh Sahu",
     role: "Agricultural Landowner",
     location: "Khandagiri",
@@ -87,19 +87,19 @@ const testimonials: Testimonial[] = [
 const faqs: FAQ[] = [
   {
     question: "What types of land does OMVIK partner with?",
-    answer: "OMVIK works with a wide range of land parcels — agricultural land, ancestral estates, urban plots, and commercial land across Odisha. Whether your land is in the heart of Bhubaneswar or in a developing corridor, we evaluate its potential and tailor a development strategy to maximise its value.",
+    answer: "OMVIK works with a wide range of land parcels including agricultural land, ancestral estates, urban plots, and commercial land across Odisha. Whether your land is in the heart of Bhubaneswar or in a developing corridor, we evaluate its potential and tailor a development strategy to maximise its value.",
   },
   {
     question: "How does the joint venture process work?",
-    answer: "Our joint venture model is simple and landowner-friendly. Once we assess your land, we structure a legally sound partnership agreement that clearly defines revenue sharing, development timelines, and each party's responsibilities. You retain ownership throughout the process while we handle all planning, construction, and marketing.",
+    answer: "Our joint venture model is simple and landowner friendly. Once we assess your land, we structure a legally sound partnership agreement that clearly defines revenue sharing, development timelines, and each party's responsibilities. You retain ownership throughout the process while we handle all planning, construction, and marketing.",
   },
   {
     question: "Is there any upfront cost for landowners?",
-    answer: "No. Landowners do not bear any development cost. OMVIK invests the capital required for design, approvals, construction, and sales. Your contribution is the land itself — we handle everything else and share returns upon project completion.",
+    answer: "No. Landowners do not bear any development cost. OMVIK invests the capital required for design, approvals, construction, and sales. Your contribution is the land itself, we handle everything else and share returns upon project completion.",
   },
   {
     question: "How long does a typical development project take?",
-    answer: "Project timelines vary based on land size, type, and regulatory approvals. Residential plotted developments typically take 12–24 months, while larger mixed-use or commercial projects may take 24–48 months. We provide a transparent timeline at the outset and keep you updated at every milestone.",
+    answer: "Project timelines vary based on land size, type, and regulatory approvals. Residential plotted developments typically take 12 to 24 months, while larger mixed use or commercial projects may take 24 to 48 months. We provide a transparent timeline at the outset and keep you updated at every milestone.",
   },
   {
     question: "How are profits shared between OMVIK and the landowner?",
