@@ -1,6 +1,5 @@
-import PostDetail from "@/components/PostDetail";
+import { redirect } from "next/navigation";
 
-export default async function NewsDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  return <PostDetail id={id} type="news" />;
+export default async function NewsDetailPage() {
+  redirect("/ground-report/blogs");
 }

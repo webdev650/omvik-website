@@ -1,12 +1,15 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { ChevronLeft, ChevronRight, Plus, Minus } from "lucide-react";
+import { ChevronLeft, ChevronRight, Plus, Minus, Star } from "lucide-react";
 
 interface Testimonial {
   text: string;
   name: string;
   role: string;
+  location: string;
+  rating: number;
+  highlight?: string;
 }
 
 interface FAQ {
@@ -15,16 +18,70 @@ interface FAQ {
 }
 
 const testimonials: Testimonial[] = [
-  { text: "OMVIK transformed our land into a premium investment opportunity.", name: "Ramesh Patnaik", role: "Land Owner, Odisha" },
-  { text: "Professional, transparent, and absolutely reliable from day one.", name: "Sunita Dash", role: "Investor, Bhubaneswar" },
-  { text: "A seamless experience from start to finish. They handled everything.", name: "Anil Kumar", role: "Property Owner" },
-  { text: "Highly recommended for landowners seeking serious developers.", name: "Priya Mohanty", role: "Commercial Partner" },
-  { text: "They truly understand the heritage and value of our properties.", name: "Dr. S. Mishra", role: "Estate Owner" },
-  { text: "Working with OMVIK gave us complete peace of mind. Excellent yields.", name: "Vikram Singh", role: "NRI Investor" },
-  { text: "Their vision for development aligns perfectly with sustainable growth.", name: "Anita Rao", role: "Land Owner, Cuttack" },
-  { text: "OMVIK helped us unlock the true maximum value of our ancestral land.", name: "Rajesh Sahu", role: "Agricultural Landowner" },
-  { text: "The entire process was smooth, and legalities were crystal clear.", name: "Niharika Pradhan", role: "Business Owner" },
-  { text: "A trustworthy partner in real estate. We couldn't be happier.", name: "Suresh Das", role: "Joint Venture Partner" },
+  {
+    text: "Partnering with OMVIK transformed our ancestral land in Patia into a thriving premium commercial space. Their legal transparency, end-to-end execution, and timely joint-venture returns exceeded all our expectations.",
+    name: "Ramesh Patnaik",
+    role: "Landowner",
+    location: "Patia, Bhubaneswar",
+    rating: 5,
+    highlight: "Unlocked True Land Potential"
+  },
+  {
+    text: "As an investor, transparency and regulatory compliance are non-negotiable. OMVIK delivered flawless execution from clear legal documentation to high-end project delivery. Absolutely reliable partners.",
+    name: "Sunita Dash",
+    role: "Real Estate Investor",
+    location: "Bhubaneswar",
+    rating: 5,
+    highlight: "Unmatched Professionalism & Trust"
+  },
+  {
+    text: "OMVIK handled every aspect of development — architectural planning, approvals, and quality construction — without any upfront cost to us. They truly respect the landowner's long-term interest.",
+    name: "Anil Kumar Mohanty",
+    role: "Property Owner",
+    location: "Cuttack",
+    rating: 5,
+    highlight: "Hassle-Free Joint Venture"
+  },
+  {
+    text: "They truly understand the heritage of our family estate. Their development vision seamlessly combined modern architectural excellence with maximum market valuation while keeping legalities crystal clear.",
+    name: "Dr. Soumya Mishra",
+    role: "Estate Owner",
+    location: "Puri Road, Odisha",
+    rating: 5,
+    highlight: "Preserved Value & Premium Growth"
+  },
+  {
+    text: "Managing property development from overseas used to be stressful. OMVIK’s digitized reporting, transparent legal agreements, and regular video updates gave me 100% peace of mind from Singapore.",
+    name: "Vikram Singh",
+    role: "NRI Investor",
+    location: "Singapore / Odisha",
+    rating: 5,
+    highlight: "Seamless Remote Partnership"
+  },
+  {
+    text: "OMVIK's strategic location planning and high-grade construction quality turned our underutilized commercial parcel into a landmark destination with exceptional, recurring yields.",
+    name: "Anita Rao",
+    role: "Commercial Partner",
+    location: "Jaydev Vihar",
+    rating: 5,
+    highlight: "Maximised Market Yields"
+  },
+  {
+    text: "From day one, the revenue-sharing model and construction milestones were explicitly documented and strictly followed. OMVIK is easily the most trustworthy land developer in Odisha.",
+    name: "Rajesh Sahu",
+    role: "Agricultural Landowner",
+    location: "Khandagiri",
+    rating: 5,
+    highlight: "Transparent & Ethical Dealings"
+  },
+  {
+    text: "Their legal and regulatory team navigated complex municipal and title approvals effortlessly. We did not face a single administrative obstacle during the entire development lifecycle.",
+    name: "Niharika Pradhan",
+    role: "Business Owner",
+    location: "Infocity Corridor",
+    rating: 5,
+    highlight: "Effortless Clearances & Approvals"
+  },
 ];
 
 const faqs: FAQ[] = [
@@ -115,7 +172,7 @@ export default function Testimonials() {
           <div className="relative max-w-3xl mx-auto">
             <div
               key={animKey}
-              className="relative bg-white rounded-2xl px-10 md:px-16 py-14 text-center transition-shadow duration-300 hover:shadow-lg"
+              className="relative bg-white rounded-2xl px-10 md:px-16 py-12 text-center transition-shadow duration-300 hover:shadow-lg"
               style={{ border: "1px solid rgba(197,160,89,0.18)", animation: "fadeUp 0.45s ease both" }}
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
@@ -127,8 +184,25 @@ export default function Testimonials() {
                 &ldquo;
               </span>
 
+              {/* Star Rating */}
+              <div className="flex items-center justify-center gap-1 mb-4 relative z-10">
+                {Array.from({ length: testimonials[currentIndex].rating || 5 }).map((_, i) => (
+                  <Star key={i} size={16} fill="#C5A059" color="#C5A059" />
+                ))}
+              </div>
+
+              {/* Highlight Tag line */}
+              {testimonials[currentIndex].highlight && (
+                <p
+                  className="font-poppins text-xs font-semibold uppercase tracking-wider mb-4"
+                  style={{ color: "#C5A059" }}
+                >
+                  &ldquo;{testimonials[currentIndex].highlight}&rdquo;
+                </p>
+              )}
+
               <p
-                className="font-playfair italic text-xl md:text-2xl leading-relaxed mb-10 relative z-10"
+                className="font-playfair italic text-xl md:text-2xl leading-relaxed mb-8 relative z-10"
                 style={{ color: "#2C2418" }}
               >
                 {testimonials[currentIndex].text}
@@ -145,7 +219,7 @@ export default function Testimonials() {
                 className="font-poppins text-[11px] uppercase tracking-widest"
                 style={{ color: "#B8916A" }}
               >
-                {testimonials[currentIndex].role}
+                {testimonials[currentIndex].role} • {testimonials[currentIndex].location}
               </p>
             </div>
 
