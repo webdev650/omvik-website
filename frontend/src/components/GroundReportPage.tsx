@@ -16,8 +16,8 @@ interface Post {
   createdAt: string;
 }
 
-// Only these 5 categories — no "All"
 const CATEGORIES = [
+  { label: "All",            icon: "📋" },
   { label: "Residential",    icon: "🏠" },
   { label: "Commercial",     icon: "🏢" },
   { label: "Market Trends",  icon: "📈" },
@@ -36,25 +36,20 @@ const LOCALITY_IMAGES = [
 ];
 
 export default function GroundReportPage({ type }: { type: "blog" | "news" }) {
-  // null = no category selected yet
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<string>("All");
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(false);
 
   const accent = type === "blog" ? "#E86A2C" : "#185FA5";
 
-  // Fetch posts only when a category is selected
+  // Fetch posts whenever category changes
   useEffect(() => {
-    if (!activeCategory) {
-      setPosts([]);
-      return;
-    }
     const fetchPosts = async () => {
       setLoading(true);
       try {
-        const res = await api.get("/posts", {
-          params: { type, category: activeCategory },
-        });
+        const params: any = { type };
+        if (activeCategory !== "All") params.category = activeCategory;
+        const res = await api.get("/posts", { params });
         setPosts(res.data);
       } catch (err) {
         console.error("Error fetching posts", err);
@@ -75,8 +70,7 @@ export default function GroundReportPage({ type }: { type: "blog" | "news" }) {
   };
 
   const handleCategory = (cat: string) => {
-    // Toggle off if same, else switch
-    setActiveCategory((prev) => (prev === cat ? null : cat));
+    setActiveCategory(cat);
   };
 
   return (
@@ -192,34 +186,17 @@ export default function GroundReportPage({ type }: { type: "blog" | "news" }) {
       ═══════════════════════════════════════════ */}
       <div className="container mx-auto px-6 md:px-12 max-w-7xl py-14">
 
-        {/* ── No category selected yet ── */}
-        {!activeCategory && (
-          <div className="text-center py-24">
-            <p className="text-4xl mb-6">👆</p>
-            <h2 className="text-2xl md:text-3xl font-clagio text-black mb-3">
-              Select a Category
-            </h2>
-            <p className="text-black/45 font-medium text-sm max-w-sm mx-auto leading-relaxed">
-              Choose from{" "}
-              <strong>Residential, Commercial, Market Trends, Company News</strong>{" "}
-              or <strong>Guides</strong> above to explore our blogs.
-            </p>
-          </div>
-        )}
-
         {/* ── Category heading ── */}
-        {activeCategory && (
-          <div className="flex items-baseline gap-4 mb-10">
-            <h2 className="text-2xl md:text-3xl font-clagio text-black tracking-wide">
-              {activeCategory}
-            </h2>
-            {!loading && (
-              <span className="text-sm text-black/40 font-medium">
-                {posts.length} {posts.length === 1 ? "post" : "posts"}
-              </span>
-            )}
-          </div>
-        )}
+        <div className="flex items-baseline gap-4 mb-10">
+          <h2 className="text-2xl md:text-3xl font-clagio text-black tracking-wide">
+            {activeCategory === "All" ? "All Posts" : activeCategory}
+          </h2>
+          {!loading && (
+            <span className="text-sm text-black/40 font-medium">
+              {posts.length} {posts.length === 1 ? "post" : "posts"}
+            </span>
+          )}
+        </div>
 
         {/* ── Loading skeleton ── */}
         {loading && (
@@ -243,14 +220,15 @@ export default function GroundReportPage({ type }: { type: "blog" | "news" }) {
         )}
 
         {/* ── Empty state ── */}
-        {!loading && activeCategory && posts.length === 0 && (
+        {!loading && posts.length === 0 && (
           <div className="text-center py-24 border border-dashed border-black/15 rounded-2xl">
             <p className="text-5xl mb-6">📭</p>
             <h3 className="text-2xl font-clagio text-black mb-2">
               No posts yet
             </h3>
             <p className="text-black/50 font-medium text-sm">
-              No {type === "blog" ? "blogs" : "news"} found in &ldquo;{activeCategory}&rdquo;.
+              No {type === "blog" ? "blogs" : "news"} found
+              {activeCategory !== "All" ? ` in "${activeCategory}"` : ""}.
               <br />Check back soon!
             </p>
           </div>
