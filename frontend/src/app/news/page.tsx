@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import NewsListingClient from "./NewsListingClient";
+import NewsListingClient from "@/app/news/NewsListingClient";
 
 export const metadata: Metadata = {
   title: "News & Press Releases | Ground Report | OMVIK Realcon",

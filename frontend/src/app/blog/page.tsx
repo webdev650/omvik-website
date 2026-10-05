@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import BlogListingClient from "./BlogListingClient";
+import BlogListingClient from "@/app/blog/BlogListingClient";
 
 export const metadata: Metadata = {
   title: "Blog & Real Estate Insights | OMVIK Realcon Bhubaneswar",
