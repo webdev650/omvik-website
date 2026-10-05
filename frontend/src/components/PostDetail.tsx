@@ -55,7 +55,7 @@ export default function PostDetail({
   const [error, setError] = useState(false);
 
   const accent = type === "blog" ? "#E86A2C" : "#185FA5";
-  const backHref = `/ground-report/${type === "blog" ? "blogs" : "news"}`;
+  const backHref = type === "blog" ? "/blog" : "/news";
 
   useEffect(() => {
     const fetchPost = async () => {

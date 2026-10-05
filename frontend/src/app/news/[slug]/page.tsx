@@ -72,7 +72,9 @@ export default async function SingleNewsPage({ params }: PageProps) {
         <header className="mb-10">
           <Link
             href="/news"
-            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-stone-600 hover:text-[#e8692b] transition-colors mb-8 group focus-visible:ring-2 focus-visible:ring-[#e8692b] focus-visible:outline-none rounded-full px-3.5 py-1.5 bg-stone-100/80 hover:bg-stone-200/60 w-fit"
+            prefetch={true}
+            aria-label="Back to News"
+            className="relative z-20 cursor-pointer inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-stone-700 hover:text-[#e8692b] transition-colors mb-8 group focus-visible:ring-2 focus-visible:ring-[#e8692b] focus-visible:outline-none rounded-full px-4 py-2 bg-stone-100 hover:bg-stone-200/80 w-fit border border-stone-200/80 shadow-sm"
           >
             <span className="group-hover:-translate-x-1 transition-transform duration-300">
               ←
