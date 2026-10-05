@@ -9,117 +9,263 @@ interface Post {
   _id: string;
   title: string;
   content: string;
+  excerpt?: string;
   image: string;
+  thumbnail?: string;
   category: string;
   createdAt: string;
 }
 
-export default function PostDetail({ id, type }: { id: string, type: 'blog' | 'news' }) {
-    const [post, setPost] = useState<Post | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(false);
+// The 4 Bhubaneswar locality images shown at the bottom of every blog post
+const LOCALITY_IMAGES = [
+  {
+    src: "/images/blog-hero-1.png",
+    label: "North Bhubaneswar",
+    sublabel: "Modern Living & Connectivity",
+  },
+  {
+    src: "/images/blog-hero-2.png",
+    label: "Central Bhubaneswar",
+    sublabel: "Established & Convenient",
+  },
+  {
+    src: "/images/blog-hero-3.png",
+    label: "Old Bhubaneswar",
+    sublabel: "Heritage & Community",
+  },
+  {
+    src: "/images/blog-hero-4.png",
+    label: "South Bhubaneswar",
+    sublabel: "Growing Corridors",
+  },
+];
 
-    const accentColor = type === 'blog' ? '#E86A2C' : '#185FA5';
+const FALLBACK_IMG =
+  "https://res.cloudinary.com/dtmqv7oqq/image/upload/v1782557955/TOWNSHIP_qf8nyk.jpg";
 
-    useEffect(() => {
-        const fetchPost = async () => {
-            try {
-                const res = await api.get(`/posts/${id}`);
-                setPost(res.data);
-            } catch (err) {
-                console.error(err);
-                setError(true);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchPost();
-    }, [id]);
+export default function PostDetail({
+  id,
+  type,
+}: {
+  id: string;
+  type: "blog" | "news";
+}) {
+  const [post, setPost] = useState<Post | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-    if (loading) {
-        return (
-            <div className="min-h-screen pt-32 pb-12 bg-[#FDFCFB] flex justify-center items-start">
-                <div className="animate-pulse flex flex-col w-full max-w-4xl px-6">
-                    <div className="bg-black/10 h-6 w-32 mb-12 rounded" />
-                    <div className="bg-black/10 h-10 w-3/4 mb-4 rounded" />
-                    <div className="bg-black/10 aspect-video w-full rounded-2xl mb-8" />
-                    <div className="space-y-4 w-full">
-                        <div className="bg-black/10 h-4 w-full rounded" />
-                        <div className="bg-black/10 h-4 w-full rounded" />
-                        <div className="bg-black/10 h-4 w-5/6 rounded" />
-                    </div>
-                </div>
-            </div>
-        );
-    }
+  const accent = type === "blog" ? "#E86A2C" : "#185FA5";
+  const backHref = `/ground-report/${type === "blog" ? "blogs" : "news"}`;
 
-    if (error || !post) {
-        return (
-            <div className="min-h-screen pt-40 pb-12 bg-[#FDFCFB] flex justify-center items-start">
-                <div className="text-center bg-white p-12 rounded-2xl shadow-sm border border-black/5">
-                    <h1 className="text-4xl font-bold mb-6 font-clagio uppercase tracking-widest text-black">Post Not Found</h1>
-                    <p className="text-black/60 mb-8 font-medium">The post you are looking for has been moved or deleted.</p>
-                    <Link href={`/ground-report/${type === 'blog' ? 'blogs' : 'news'}`} className="inline-block font-bold text-xs tracking-widest uppercase bg-black text-white px-8 py-4 rounded-xl hover:bg-black/80 transition-all">
-                        Return to {type === 'blog' ? 'Blogs' : 'News'}
-                    </Link>
-                </div>
-            </div>
-        );
-    }
+  useEffect(() => {
+    const fetchPost = async () => {
+      try {
+        const res = await api.get(`/posts/${id}`);
+        setPost(res.data);
+      } catch (err) {
+        console.error(err);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPost();
+  }, [id]);
 
+  /* ── Loading skeleton ── */
+  if (loading) {
     return (
-        <article className="min-h-screen pt-32 pb-24 bg-[#FDFCFB]">
-            <div className="container mx-auto px-6 md:px-12 max-w-4xl">
-                
-                <Link href={`/ground-report/${type === 'blog' ? 'blogs' : 'news'}`} className="inline-flex items-center text-xs font-bold tracking-[0.2em] uppercase mb-12 text-black/60 hover:text-black transition-colors">
-                    &larr; Back to {type === 'blog' ? 'Blogs' : 'News'}
-                </Link>
+      <div className="min-h-screen bg-[#FDFCFB] pt-32 pb-16">
+        <div className="animate-pulse container mx-auto px-6 md:px-12 max-w-4xl">
+          <div className="bg-black/10 h-4 w-28 mb-12 rounded-full" />
+          <div className="bg-black/10 h-8 w-3/4 mb-4 rounded" />
+          <div className="bg-black/10 h-6 w-1/2 mb-10 rounded" />
+          <div className="bg-black/10 aspect-video w-full rounded-2xl mb-10" />
+          <div className="space-y-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="bg-black/8 h-4 rounded w-full" />
+            ))}
+            <div className="bg-black/8 h-4 rounded w-4/5" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-                <div className="mb-12">
-                    <div className="flex items-center gap-4 mb-8">
-                        <span 
-                            className="px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-white rounded-full shadow-sm"
-                            style={{ backgroundColor: accentColor }}
-                        >
-                            {post.category}
-                        </span>
-                        <span className="text-sm font-bold tracking-widest text-black/50 uppercase">
-                            {new Date(post.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
-                        </span>
-                    </div>
+  /* ── Error / Not found ── */
+  if (error || !post) {
+    return (
+      <div className="min-h-screen bg-[#FDFCFB] pt-40 pb-16 flex items-start justify-center">
+        <div className="text-center bg-white p-14 rounded-2xl border border-black/6 shadow-sm">
+          <p className="text-5xl mb-6">🔍</p>
+          <h1 className="text-3xl font-clagio text-black mb-3">Post Not Found</h1>
+          <p className="text-black/50 mb-8 font-medium">
+            This post has been moved or deleted.
+          </p>
+          <Link
+            href={backHref}
+            className="inline-block font-bold text-xs tracking-widest uppercase bg-black text-white px-8 py-4 rounded-xl hover:bg-black/75 transition-all"
+          >
+            ← Back to {type === "blog" ? "Blogs" : "News"}
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-clagio text-black leading-[1.1] mb-12">
-                        {post.title}
-                    </h1>
+  const heroImg = post.thumbnail || post.image || FALLBACK_IMG;
 
-                    <div className="relative aspect-video w-full rounded-2xl overflow-hidden shadow-2xl mb-16 border border-black/5">
-                        <Image 
-                            src={post.image || 'https://res.cloudinary.com/dtmqv7oqq/image/upload/v1782557955/TOWNSHIP_qf8nyk.jpg'}
-                            alt={post.title}
-                            fill
-                            priority
-                            className="object-cover"
-                        />
-                    </div>
+  return (
+    <article className="min-h-screen bg-[#FDFCFB]">
+
+      {/* ─── HERO IMAGE (full-width cinematic) ─── */}
+      <div className="relative w-full h-[55vh] md:h-[70vh] overflow-hidden">
+        <Image
+          src={heroImg}
+          alt={post.title}
+          fill
+          priority
+          className="object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent" />
+
+        {/* Overlay metadata */}
+        <div className="absolute inset-0 flex flex-col justify-end pb-12 md:pb-18 px-6 md:px-16 lg:px-24 max-w-5xl">
+          <div className="flex items-center gap-3 mb-5">
+            <span
+              className="px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-white rounded-full"
+              style={{ backgroundColor: accent }}
+            >
+              {post.category}
+            </span>
+            <span className="text-white/50 text-xs font-semibold tracking-widest uppercase">
+              {new Date(post.createdAt).toLocaleDateString("en-IN", {
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+              })}
+            </span>
+          </div>
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-clagio text-white leading-[1.05] max-w-3xl">
+            {post.title}
+          </h1>
+        </div>
+      </div>
+
+      {/* ─── CONTENT ─── */}
+      <div className="container mx-auto px-6 md:px-12 max-w-4xl py-14 md:py-20">
+
+        {/* Back link */}
+        <Link
+          href={backHref}
+          className="inline-flex items-center gap-2 text-[11px] font-bold tracking-[0.25em] uppercase text-black/45 hover:text-black transition-colors mb-12"
+        >
+          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
+          </svg>
+          Back to {type === "blog" ? "Blogs" : "News"}
+        </Link>
+
+        {/* Full blog content */}
+        <div
+          className="
+            text-black/80 leading-relaxed text-base md:text-lg font-medium tracking-wide
+            [&>p]:mb-7
+            [&>h2]:text-2xl md:[&>h2]:text-3xl [&>h2]:font-clagio [&>h2]:text-black [&>h2]:mt-14 [&>h2]:mb-6
+            [&>h3]:text-xl [&>h3]:font-bold [&>h3]:text-black [&>h3]:mt-10 [&>h3]:mb-4
+            [&>ul]:list-disc [&>ul]:pl-7 [&>ul]:mb-7 [&>ul>li]:mb-2
+            [&>ol]:list-decimal [&>ol]:pl-7 [&>ol]:mb-7 [&>ol>li]:mb-2
+            [&>strong]:text-black [&>strong]:font-bold
+            [&>a]:underline [&>a]:hover:opacity-75
+            [&>blockquote]:border-l-4 [&>blockquote]:border-black/20 [&>blockquote]:pl-6 [&>blockquote]:italic [&>blockquote]:text-black/55 [&>blockquote]:my-8
+            [&>img]:rounded-xl [&>img]:shadow-md [&>img]:w-full [&>img]:my-10
+          "
+          dangerouslySetInnerHTML={{ __html: post.content }}
+        />
+
+        {/* ─── DIVIDER ─── */}
+        <div className="flex items-center gap-4 my-14 md:my-20">
+          <div className="flex-1 h-px bg-black/10" />
+          <span className="text-[10px] font-bold tracking-[0.4em] uppercase text-black/30">
+            Explore Bhubaneswar
+          </span>
+          <div className="flex-1 h-px bg-black/10" />
+        </div>
+
+        {/* ─── 4 LOCALITY IMAGES SECTION ─── */}
+        <div className="mb-16">
+          <h2 className="text-2xl md:text-3xl font-clagio text-black mb-2">
+            The Four Zones of Bhubaneswar
+          </h2>
+          <p className="text-black/50 text-sm font-medium mb-8 leading-relaxed">
+            Each locality has its own character, community, and growth story. Explore them all.
+          </p>
+
+          {/* 2×2 mosaic on mobile, 4-col on desktop */}
+          <div className="grid grid-cols-2 md:grid-cols-4 rounded-2xl overflow-hidden shadow-xl border border-black/6">
+            {LOCALITY_IMAGES.map((img, i) => (
+              <div
+                key={i}
+                className="relative h-52 md:h-64 overflow-hidden group"
+              >
+                <Image
+                  src={img.src}
+                  alt={img.label}
+                  fill
+                  className="object-cover group-hover:scale-108 transition-transform duration-700 ease-in-out"
+                  style={{ transform: "scale(1)" }}
+                />
+                {/* Gradient */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent group-hover:from-black/90 transition-all duration-500" />
+
+                {/* Labels */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-1 group-hover:translate-y-0 transition-transform duration-300">
+                  <p className="text-white font-bold text-xs md:text-sm leading-tight">
+                    {img.label}
+                  </p>
+                  <p className="text-white/60 text-[10px] md:text-xs mt-1 tracking-wider font-medium opacity-0 group-hover:opacity-100 transition-opacity duration-400">
+                    {img.sublabel}
+                  </p>
                 </div>
 
-                <div 
-                    className="
-                        text-black/80 leading-relaxed text-lg font-medium tracking-wide
-                        [&>p]:mb-8 
-                        [&>h2]:text-3xl [&>h2]:font-clagio [&>h2]:text-black [&>h2]:mt-16 [&>h2]:mb-8
-                        [&>h3]:text-2xl [&>h3]:font-bold [&>h3]:text-black [&>h3]:mt-12 [&>h3]:mb-6 
-                        [&>ul]:list-disc [&>ul]:pl-8 [&>ul]:mb-8 [&>ul>li]:mb-2
-                        [&>ol]:list-decimal [&>ol]:pl-8 [&>ol]:mb-8 [&>ol>li]:mb-2
-                        [&>strong]:text-black [&>strong]:font-bold
-                        [&>a]:text-[#185FA5] [&>a]:underline [&>a]:hover:text-black
-                        [&>blockquote]:border-l-4 [&>blockquote]:border-black/20 [&>blockquote]:pl-6 [&>blockquote]:italic [&>blockquote]:text-black/60 [&>blockquote]:my-8
-                        [&>img]:rounded-xl [&>img]:shadow-md [&>img]:w-full [&>img]:my-10
-                    "
-                    dangerouslySetInnerHTML={{ __html: post.content }}
+                {/* Orange accent line on hover */}
+                <div
+                  className="absolute bottom-0 left-0 right-0 h-[3px] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"
+                  style={{ backgroundColor: "#E86A2C" }}
                 />
+              </div>
+            ))}
+          </div>
+        </div>
 
-            </div>
-        </article>
-    );
+        {/* ─── CTA FOOTER ─── */}
+        <div className="rounded-2xl overflow-hidden border border-black/8 bg-white p-10 md:p-14 text-center shadow-sm">
+          <p className="text-[11px] font-bold tracking-[0.4em] uppercase mb-4" style={{ color: accent }}>
+            OMVIK Realcon
+          </p>
+          <h3 className="text-2xl md:text-3xl font-clagio text-black mb-4 leading-tight">
+            Ready to find your place in Bhubaneswar?
+          </h3>
+          <p className="text-black/50 text-sm font-medium mb-8 max-w-md mx-auto leading-relaxed">
+            Explore thoughtfully planned residential developments — built with attention to quality, planning and long-term value.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+            <Link
+              href="/contact"
+              className="inline-block px-8 py-4 text-white font-bold text-xs tracking-[0.2em] uppercase rounded-xl transition-all hover:opacity-90 hover:shadow-lg"
+              style={{ backgroundColor: accent }}
+            >
+              Book a Consultation
+            </Link>
+            <Link
+              href={backHref}
+              className="inline-block px-8 py-4 bg-black/5 text-black font-bold text-xs tracking-[0.2em] uppercase rounded-xl transition-all hover:bg-black/10"
+            >
+              ← More {type === "blog" ? "Blogs" : "News"}
+            </Link>
+          </div>
+        </div>
+      </div>
+    </article>
+  );
 }
