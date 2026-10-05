@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { User, Menu, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -12,6 +13,12 @@ export default function Navigation() {
     const [groundReportOpen, setGroundReportOpen] = useState(false);
     const [mobileGroundReportOpen, setMobileGroundReportOpen] = useState(true);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const pathname = usePathname();
+
+    const isGroundReportActive =
+        pathname.startsWith("/blog") ||
+        pathname.startsWith("/news") ||
+        pathname.startsWith("/ground-report");
 
     // Track scroll for adaptive styling
     useEffect(() => {
@@ -31,6 +38,17 @@ export default function Navigation() {
         };
         document.addEventListener("mousedown", handleClickOutside);
         return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    // Close dropdown on Escape key press
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") {
+                setGroundReportOpen(false);
+            }
+        };
+        document.addEventListener("keydown", handleKeyDown);
+        return () => document.removeEventListener("keydown", handleKeyDown);
     }, []);
 
     // Lock scroll when menu is open
@@ -69,15 +87,27 @@ export default function Navigation() {
 
                 {/* Desktop Links - True Centered */}
                 <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center space-x-6 lg:space-x-10 text-[10px] uppercase tracking-[0.3em] text-black font-clagio font-medium transition-all">
-                    <Link href="/services" prefetch={true} className="zenith-link-hover hover:opacity-100 transition-opacity whitespace-nowrap">
+                    <Link
+                        href="/services"
+                        prefetch={true}
+                        className={`zenith-link-hover hover:opacity-100 transition-opacity whitespace-nowrap ${
+                            pathname.startsWith("/services") ? "text-[#e8692b] font-semibold" : ""
+                        }`}
+                    >
                         Services
                     </Link>
 
-                    <Link href="/about" prefetch={true} className="zenith-link-hover hover:opacity-100 transition-opacity whitespace-nowrap">
+                    <Link
+                        href="/about"
+                        prefetch={true}
+                        className={`zenith-link-hover hover:opacity-100 transition-opacity whitespace-nowrap ${
+                            pathname.startsWith("/about") ? "text-[#e8692b] font-semibold" : ""
+                        }`}
+                    >
                         About Us
                     </Link>
 
-                    {/* Ground Report Dropdown Trigger */}
+                    {/* Ground Report Dropdown */}
                     <div
                         ref={dropdownRef}
                         className="relative py-3"
@@ -85,75 +115,76 @@ export default function Navigation() {
                         onMouseLeave={() => setGroundReportOpen(false)}
                     >
                         <button
-                            onClick={() => setGroundReportOpen(!groundReportOpen)}
-                            className="flex items-center gap-1.5 zenith-link-hover hover:opacity-100 transition-opacity whitespace-nowrap uppercase tracking-[0.3em] font-clagio focus-visible:outline-none cursor-pointer"
+                            type="button"
+                            onClick={(e) => {
+                                e.preventDefault();
+                                setGroundReportOpen((prev) => !prev);
+                            }}
+                            className={`flex items-center gap-1.5 zenith-link-hover transition-colors whitespace-nowrap uppercase tracking-[0.3em] font-clagio focus-visible:ring-2 focus-visible:ring-[#e8692b] focus-visible:outline-none cursor-pointer ${
+                                isGroundReportActive ? "text-[#e8692b] font-semibold" : "text-black"
+                            }`}
                             aria-expanded={groundReportOpen}
                             aria-haspopup="true"
                         >
                             <span>Ground Report</span>
                             <ChevronDown
                                 size={12}
-                                className={`transition-transform duration-300 ${groundReportOpen ? "rotate-180 text-[#e8692b]" : "opacity-60"}`}
+                                className={`transition-transform duration-300 ${
+                                    groundReportOpen ? "rotate-180 text-[#e8692b]" : "opacity-60"
+                                }`}
                             />
                         </button>
 
-                        {/* Dropdown Menu Overlay */}
+                        {/* Dropdown Menu Card */}
                         <AnimatePresence>
                             {groundReportOpen && (
                                 <motion.div
-                                    initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                                    exit={{ opacity: 0, y: 6, scale: 0.98 }}
+                                    initial={{ opacity: 0, y: 6 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: 6 }}
                                     transition={{ duration: 0.2, ease: "easeOut" }}
-                                    className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-64 bg-white/95 backdrop-blur-xl border border-stone-200/90 rounded-2xl shadow-xl p-3 z-[10020] text-left normal-case tracking-normal"
+                                    className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-44 bg-[#ffffff] border border-[#e2e0db] rounded-[14px] shadow-[0_10px_30px_rgba(0,0,0,0.08)] p-2 z-[10020] text-left uppercase tracking-[0.14em] text-[12px] font-semibold font-sans leading-none"
+                                    role="menu"
                                 >
-                                    <div className="text-[9px] uppercase tracking-[0.2em] font-semibold text-stone-400 px-3 pt-2 pb-1.5 border-b border-stone-100">
-                                        Ground Report
-                                    </div>
+                                    <Link
+                                        href="/blog"
+                                        prefetch={true}
+                                        onClick={() => setGroundReportOpen(false)}
+                                        className={`block px-5 py-3 rounded-[10px] transition-colors focus-visible:bg-[#fbfaf8] focus-visible:text-[#e8692b] focus-visible:outline-none ${
+                                            pathname.startsWith("/blog")
+                                                ? "bg-[#fbfaf8] text-[#e8692b]"
+                                                : "text-stone-900 hover:bg-[#fbfaf8] hover:text-[#e8692b]"
+                                        }`}
+                                        role="menuitem"
+                                    >
+                                        Blog
+                                    </Link>
 
-                                    <div className="pt-2 space-y-1.5">
-                                        <Link
-                                            href="/blog"
-                                            prefetch={true}
-                                            onClick={() => setGroundReportOpen(false)}
-                                            className="flex items-start gap-3 p-3 rounded-xl hover:bg-[#e8692b]/10 transition-colors group"
-                                        >
-                                            <span className="text-lg leading-none mt-0.5">📋</span>
-                                            <div>
-                                                <div className="text-xs font-semibold text-stone-900 group-hover:text-[#e8692b] transition-colors flex items-center justify-between">
-                                                    <span>Blog Section</span>
-                                                    <span className="text-[10px] text-[#e8692b] opacity-0 group-hover:opacity-100 transition-opacity">→</span>
-                                                </div>
-                                                <div className="text-[11px] text-stone-500 font-light leading-snug mt-0.5">
-                                                    Real estate guides & locality insights
-                                                </div>
-                                            </div>
-                                        </Link>
-
-                                        <Link
-                                            href="/ground-report/news"
-                                            prefetch={true}
-                                            onClick={() => setGroundReportOpen(false)}
-                                            className="flex items-start gap-3 p-3 rounded-xl hover:bg-[#185FA5]/10 transition-colors group"
-                                        >
-                                            <span className="text-lg leading-none mt-0.5">📰</span>
-                                            <div>
-                                                <div className="text-xs font-semibold text-stone-900 group-hover:text-[#185FA5] transition-colors flex items-center justify-between">
-                                                    <span>News Section</span>
-                                                    <span className="text-[10px] text-[#185FA5] opacity-0 group-hover:opacity-100 transition-opacity">→</span>
-                                                </div>
-                                                <div className="text-[11px] text-stone-500 font-light leading-snug mt-0.5">
-                                                    Latest company updates & announcements
-                                                </div>
-                                            </div>
-                                        </Link>
-                                    </div>
+                                    <Link
+                                        href="/news"
+                                        prefetch={true}
+                                        onClick={() => setGroundReportOpen(false)}
+                                        className={`block px-5 py-3 rounded-[10px] transition-colors focus-visible:bg-[#fbfaf8] focus-visible:text-[#e8692b] focus-visible:outline-none ${
+                                            pathname.startsWith("/news")
+                                                ? "bg-[#fbfaf8] text-[#e8692b]"
+                                                : "text-stone-900 hover:bg-[#fbfaf8] hover:text-[#e8692b]"
+                                        }`}
+                                        role="menuitem"
+                                    >
+                                        News
+                                    </Link>
                                 </motion.div>
                             )}
                         </AnimatePresence>
                     </div>
 
-                    <Link href="/contact" prefetch={true} className="zenith-link-hover hover:opacity-100 transition-opacity whitespace-nowrap">
+                    <Link
+                        href="/contact"
+                        prefetch={true}
+                        className={`zenith-link-hover hover:opacity-100 transition-opacity whitespace-nowrap ${
+                            pathname.startsWith("/contact") ? "text-[#e8692b] font-semibold" : ""
+                        }`}
+                    >
                         Contact
                     </Link>
                 </div>
@@ -215,16 +246,20 @@ export default function Navigation() {
                                 About Us
                             </Link>
 
-                            {/* Ground Report Mobile Submenu */}
+                            {/* Ground Report Mobile Accordion */}
                             <div className="w-full flex flex-col items-center">
                                 <button
                                     onClick={() => setMobileGroundReportOpen(!mobileGroundReportOpen)}
-                                    className="text-3xl sm:text-4xl text-white font-clagio font-medium hover:opacity-70 transition-opacity tracking-[0.04em] flex items-center justify-center gap-2"
+                                    className={`text-3xl sm:text-4xl font-clagio font-medium transition-opacity tracking-[0.04em] flex items-center justify-center gap-2 ${
+                                        isGroundReportActive ? "text-[#e8692b]" : "text-white hover:opacity-70"
+                                    }`}
                                 >
                                     <span>Ground Report</span>
                                     <ChevronDown
                                         size={22}
-                                        className={`transition-transform duration-300 ${mobileGroundReportOpen ? "rotate-180 text-[#e8692b]" : "opacity-60"}`}
+                                        className={`transition-transform duration-300 ${
+                                            mobileGroundReportOpen ? "rotate-180 text-[#e8692b]" : "opacity-60"
+                                        }`}
                                     />
                                 </button>
 
@@ -241,20 +276,26 @@ export default function Navigation() {
                                                 href="/blog"
                                                 prefetch={true}
                                                 onClick={() => setIsOpen(false)}
-                                                className="text-xl text-white/90 font-medium hover:text-[#e8692b] transition-colors tracking-wide flex items-center gap-2"
+                                                className={`text-xl font-medium tracking-wide flex items-center gap-2 transition-colors ${
+                                                    pathname.startsWith("/blog")
+                                                        ? "text-[#e8692b] font-semibold"
+                                                        : "text-white/90 hover:text-[#e8692b]"
+                                                }`}
                                             >
-                                                <span>📋</span>
-                                                <span>Blog Section</span>
+                                                <span>Blog</span>
                                             </Link>
 
                                             <Link
-                                                href="/ground-report/news"
+                                                href="/news"
                                                 prefetch={true}
                                                 onClick={() => setIsOpen(false)}
-                                                className="text-xl text-white/90 font-medium hover:text-[#60a5fa] transition-colors tracking-wide flex items-center gap-2"
+                                                className={`text-xl font-medium tracking-wide flex items-center gap-2 transition-colors ${
+                                                    pathname.startsWith("/news")
+                                                        ? "text-[#e8692b] font-semibold"
+                                                        : "text-white/90 hover:text-[#e8692b]"
+                                                }`}
                                             >
-                                                <span>📰</span>
-                                                <span>News Section</span>
+                                                <span>News</span>
                                             </Link>
                                         </motion.div>
                                     )}
@@ -279,16 +320,6 @@ export default function Navigation() {
                                 Login
                             </Link>
                         </div>
-
-                        {/* Footer in Menu */}
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 0.4 }}
-                            transition={{ delay: 0.5 }}
-                            className="mt-8 text-white/60 text-xs uppercase tracking-widest text-center"
-                        >
-                            Custodians of Legacy
-                        </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
