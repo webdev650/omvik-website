@@ -20,6 +20,13 @@ const CATEGORIES = ["All", "Residential", "Commercial", "Market Trends", "Compan
 
 const FALLBACK_IMG = "https://res.cloudinary.com/dtmqv7oqq/image/upload/v1782557955/TOWNSHIP_qf8nyk.jpg";
 
+const LOCALITY_IMAGES = [
+  { src: "/images/blog-hero-1.png", label: "North Bhubaneswar",   sublabel: "Modern Living & Connectivity" },
+  { src: "/images/blog-hero-2.png", label: "Central Bhubaneswar", sublabel: "Established & Convenient" },
+  { src: "/images/blog-hero-3.png", label: "Old Bhubaneswar",     sublabel: "Heritage & Community" },
+  { src: "/images/blog-hero-4.png", label: "South Bhubaneswar",   sublabel: "Growing Corridors" },
+];
+
 export default function GroundReportPage({ type }: { type: "blog" | "news" }) {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
@@ -85,6 +92,36 @@ export default function GroundReportPage({ type }: { type: "blog" | "news" }) {
           </p>
         </div>
       </div>
+
+      {/* ─── 4-IMAGE LOCALITY MOSAIC (blog only) ─── */}
+      {type === "blog" && (
+        <div className="grid grid-cols-2 md:grid-cols-4">
+          {LOCALITY_IMAGES.map((img, i) => (
+            <div key={i} className="relative h-44 md:h-52 overflow-hidden group cursor-pointer">
+              <Image
+                src={img.src}
+                alt={img.label}
+                fill
+                className="object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-4">
+                <p className="text-white font-bold text-xs md:text-sm tracking-wide leading-tight">
+                  {img.label}
+                </p>
+                <p className="text-white/55 text-[10px] tracking-wider mt-0.5 font-medium">
+                  {img.sublabel}
+                </p>
+              </div>
+              {/* Orange accent slide-in */}
+              <div
+                className="absolute bottom-0 left-0 right-0 h-[3px] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"
+                style={{ backgroundColor: "#E86A2C" }}
+              />
+            </div>
+          ))}
+        </div>
+      )}
 
       {/* ─── CATEGORY TABS ─── */}
       <div className="sticky top-[60px] z-40 bg-[#FDFCFB]/95 backdrop-blur-md border-b border-black/8 shadow-sm">
