@@ -1,5 +1,10 @@
 import { redirect } from "next/navigation";
 
-export default async function NewsDetailPage() {
-  redirect("/ground-report/blogs");
+export default async function NewsDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  redirect(`/news/${id}`);
 }
