@@ -15,6 +15,30 @@ interface Post {
   updatedAt: string;
 }
 
+// Hero images for the blog section
+const BLOG_HERO_IMAGES = [
+  {
+    src: "/images/blog-hero-1.png",
+    label: "North Bhubaneswar",
+    sublabel: "Modern Living & Connectivity",
+  },
+  {
+    src: "/images/blog-hero-2.png",
+    label: "Central Bhubaneswar",
+    sublabel: "Established & Convenient",
+  },
+  {
+    src: "/images/blog-hero-3.png",
+    label: "Old Bhubaneswar",
+    sublabel: "Heritage & Community",
+  },
+  {
+    src: "/images/blog-hero-4.png",
+    label: "South Bhubaneswar",
+    sublabel: "Growing Corridors",
+  },
+];
+
 export default function GroundReportPage({ type }: { type: 'blog' | 'news' }) {
     const [posts, setPosts] = useState<Post[]>([]);
     const [popularPosts, setPopularPosts] = useState<Post[]>([]);
@@ -57,7 +81,68 @@ export default function GroundReportPage({ type }: { type: 'blog' | 'news' }) {
     }, [type, category, filter]);
 
     return (
-        <div className="min-h-screen pt-32 pb-12 bg-[#FDFCFB]">
+        <div className="min-h-screen bg-[#FDFCFB]">
+
+            {/* ───── BLOG HERO SECTION ───── */}
+            {type === 'blog' && (
+                <section className="w-full">
+                    {/* Main Hero Image */}
+                    <div className="relative w-full h-[60vh] md:h-[75vh] overflow-hidden">
+                        <Image
+                            src="/images/blog-hero-main.png"
+                            alt="Understanding Bhubaneswar by Locality"
+                            fill
+                            priority
+                            className="object-cover object-center scale-105"
+                            style={{ transformOrigin: 'center' }}
+                        />
+                        {/* Dark gradient overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-black/10" />
+                        {/* Overlay text */}
+                        <div className="absolute inset-0 flex flex-col justify-end pb-12 md:pb-16 px-6 md:px-16 lg:px-24 max-w-5xl">
+                            <span className="inline-block mb-4 text-[10px] font-bold tracking-[0.4em] uppercase text-[#E86A2C] bg-[#E86A2C]/10 border border-[#E86A2C]/30 px-4 py-1.5 rounded-full w-fit">
+                                05 / 10 / 2026 &nbsp;·&nbsp; Week 1 &middot; Blog 1
+                            </span>
+                            <h1 className="text-3xl md:text-5xl lg:text-6xl font-clagio text-white leading-[1.08] mb-5">
+                                Understanding Bhubaneswar<br className="hidden md:block" /> by Locality
+                            </h1>
+                            <p className="text-white/70 text-base md:text-lg font-medium max-w-2xl leading-relaxed">
+                                A Beginner&apos;s Guide — The right home is not just about what you buy.
+                                It is about <em>where</em> you choose to live.
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* 4-Image Mosaic Grid */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-0">
+                        {BLOG_HERO_IMAGES.map((img, i) => (
+                            <div key={i} className="relative h-48 md:h-56 overflow-hidden group cursor-pointer">
+                                <Image
+                                    src={img.src}
+                                    alt={img.label}
+                                    fill
+                                    className="object-cover group-hover:scale-110 transition-transform duration-700 ease-in-out"
+                                />
+                                {/* Gradient overlay */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+                                {/* Label */}
+                                <div className="absolute bottom-0 left-0 right-0 p-4">
+                                    <p className="text-white font-bold text-xs md:text-sm tracking-wide leading-tight">
+                                        {img.label}
+                                    </p>
+                                    <p className="text-white/60 text-[10px] md:text-xs tracking-wider mt-0.5 font-medium">
+                                        {img.sublabel}
+                                    </p>
+                                </div>
+                                {/* Hover accent bar */}
+                                <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#E86A2C] scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            <div className={type === 'blog' ? 'pt-12 pb-12' : 'pt-32 pb-12'}>
             <div className="container mx-auto px-6 md:px-12 max-w-7xl">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-16 border-b border-black/10 pb-6">
                     <h1 className="text-4xl md:text-5xl font-clagio uppercase tracking-[0.2em] text-black mb-4 md:mb-0">
@@ -191,6 +276,7 @@ export default function GroundReportPage({ type }: { type: 'blog' | 'news' }) {
                         )}
                     </main>
                 </div>
+            </div>
             </div>
         </div>
     );
