@@ -60,20 +60,19 @@ export default function Navigation() {
                 </Link>
 
                 {/* Desktop Links - True Centered */}
-                <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center space-x-4 lg:space-x-12 text-[10px] uppercase tracking-[0.3em] text-black font-clagio font-medium transition-all">
-
+                <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center space-x-3 lg:space-x-8 text-[10px] uppercase tracking-[0.3em] text-black font-clagio font-medium transition-all">
                     <Link href="/services" prefetch={true} className="zenith-link-hover hover:opacity-100 transition-opacity whitespace-nowrap">
                         Services
                     </Link>
                     <Link href="/about" prefetch={true} className="zenith-link-hover hover:opacity-100 transition-opacity whitespace-nowrap">
                         About Us
                     </Link>
-
-                    {/* Ground Report Link (News section temporarily hidden for live) */}
                     <Link href="/ground-report/blogs" prefetch={true} className="zenith-link-hover hover:opacity-100 transition-opacity whitespace-nowrap">
                         Ground Report
                     </Link>
-
+                    <Link href="/blog" prefetch={true} className="zenith-link-hover hover:opacity-100 transition-opacity whitespace-nowrap text-[#e8692b] font-semibold">
+                        Blog
+                    </Link>
                     <Link href="/contact" prefetch={true} className="zenith-link-hover hover:opacity-100 transition-opacity whitespace-nowrap">
                         Contact
                     </Link>
@@ -108,12 +107,13 @@ export default function Navigation() {
                         transition={{ duration: 0.4, ease: [0.76, 0, 0.24, 1] }}
                         className="fixed inset-0 h-[100dvh] w-full z-[10005] bg-[#081F5C] flex flex-col items-center justify-center overflow-hidden"
                     >
-                        <div className="flex flex-col items-center space-y-8 text-center">
+                        <div className="flex flex-col items-center space-y-7 text-center">
                             {[
                                 { name: "Home", href: "/" },
                                 { name: "Services", href: "/services" },
                                 { name: "About Us", href: "/about" },
-                                { name: "Blogs", href: "/ground-report/blogs" },
+                                { name: "Ground Report", href: "/ground-report/blogs" },
+                                { name: "Blog", href: "/blog" },
                                 { name: "Contact", href: "/contact" },
                                 { name: "Login", href: "/login" }
                             ].map((item, i) => (

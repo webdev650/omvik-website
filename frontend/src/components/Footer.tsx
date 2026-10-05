@@ -120,6 +120,7 @@ export default function Footer() {
                             {[
                                 { name: "Our Offerings", href: "/services" },
                                 { name: "Our Story", href: "/about" },
+                                { name: "Real Estate Blog", href: "/blog" },
                                 { name: "Get in Touch", href: "/contact" },
                                 { name: "Client Portal", href: "/login" }
                             ].map((link) => (
