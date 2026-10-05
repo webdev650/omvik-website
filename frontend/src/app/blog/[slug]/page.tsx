@@ -5,9 +5,9 @@ import Image from "next/image";
 import { getBlogBySlug, getAllBlogs } from "@/data/blogs";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 // Generate static params for all blogs
@@ -22,7 +22,8 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const blog = getBlogBySlug(params.slug);
+  const { slug } = await params;
+  const blog = getBlogBySlug(slug);
 
   if (!blog) {
     return {
@@ -66,8 +67,9 @@ export async function generateMetadata({
   };
 }
 
-export default function SingleBlogPage({ params }: PageProps) {
-  const blog = getBlogBySlug(params.slug);
+export default async function SingleBlogPage({ params }: PageProps) {
+  const { slug } = await params;
+  const blog = getBlogBySlug(slug);
 
   if (!blog) {
     notFound();
@@ -81,7 +83,7 @@ export default function SingleBlogPage({ params }: PageProps) {
           {/* Back to Blog link */}
           <Link
             href="/blog"
-            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-stone-600 hover:text-[#e8692b] transition-colors mb-8 group focus-visible:ring-2 focus-visible:ring-[#e8692b] focus-visible:outline-none rounded-full px-3 py-1.5 bg-stone-100/80 hover:bg-stone-200/60 w-fit"
+            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-stone-600 hover:text-[#e8692b] transition-colors mb-8 group focus-visible:ring-2 focus-visible:ring-[#e8692b] focus-visible:outline-none rounded-full px-3.5 py-1.5 bg-stone-100/80 hover:bg-stone-200/60 w-fit"
           >
             <span className="group-hover:-translate-x-1 transition-transform duration-300">
               ←
@@ -134,10 +136,6 @@ export default function SingleBlogPage({ params }: PageProps) {
 
         {/* ── CALL TO ACTION BOX ── */}
         <section className="mt-16 bg-gradient-to-br from-[#0a1628] to-[#12243e] text-white rounded-3xl p-8 sm:p-12 text-center relative overflow-hidden shadow-xl border border-stone-800">
-          {/* Subtle accent backdrop */}
-          <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#e8692b]/20 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-[#e8692b]/10 rounded-full blur-3xl pointer-events-none" />
-
           <div className="relative z-10 max-w-2xl mx-auto">
             <span className="inline-block text-[#e8692b] font-medium text-xs uppercase tracking-[0.25em] mb-3 bg-[#e8692b]/15 px-4 py-1 rounded-full border border-[#e8692b]/30">
               Partner With Us

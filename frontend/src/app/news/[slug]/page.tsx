@@ -5,9 +5,9 @@ import Image from "next/image";
 import { getNewsBySlug, getAllNews } from "@/data/news";
 
 interface PageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export async function generateStaticParams() {
@@ -20,7 +20,8 @@ export async function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
-  const newsItem = getNewsBySlug(params.slug);
+  const { slug } = await params;
+  const newsItem = getNewsBySlug(slug);
 
   if (!newsItem) {
     return {
@@ -56,8 +57,9 @@ export async function generateMetadata({
   };
 }
 
-export default function SingleNewsPage({ params }: PageProps) {
-  const newsItem = getNewsBySlug(params.slug);
+export default async function SingleNewsPage({ params }: PageProps) {
+  const { slug } = await params;
+  const newsItem = getNewsBySlug(slug);
 
   if (!newsItem) {
     notFound();
