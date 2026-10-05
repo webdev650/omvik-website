@@ -1,10 +1,19 @@
-import GroundReportPage from "@/components/GroundReportPage";
+import { Metadata } from "next";
+import BlogListingClient from "@/app/blog/BlogListingClient";
 
-export const metadata = {
-  title: 'Ground Report: Blogs | OMVIK Realcon',
-  description: 'Explore expert insights on Bhubaneswar real estate — from locality guides and market trends to residential buying tips. Ground Report by OMVIK Realcon.',
+export const metadata: Metadata = {
+  title: "Blog & Real Estate Insights | Ground Report | OMVIK Realcon",
+  description:
+    "Explore expert property guides, locality analysis, and market trends for Bhubaneswar real estate in OMVIK Ground Report.",
+  keywords: [
+    "Bhubaneswar real estate blog",
+    "property in Bhubaneswar",
+    "Bhubaneswar locality guide",
+    "OMVIK Realcon blog",
+    "Ground Report",
+  ],
 };
 
-export default function BlogsPage() {
-  return <GroundReportPage type="blog" />;
+export default function GroundReportBlogsPage() {
+  return <BlogListingClient />;
 }
