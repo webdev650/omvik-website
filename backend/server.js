@@ -16,18 +16,25 @@ const app = express();
 app.use(express.json());
 
 // Enable CORS with dynamic origins
-const allowedOrigins = [
+const defaultOrigins = [
   'http://localhost:3000',
   'http://localhost:3001',
-  'http://192.168.29.34:3000', // User's Local IP for mobile testing
-  'https://omvik.vercel.app',  // Placeholder: Replace with your actual Vercel domain
+  'http://192.168.29.34:3000',
+  'https://www.omvikrealcon.com',
+  'https://omvikrealcon.com',
 ];
+
+const envOrigins = process.env.CLIENT_URL 
+  ? process.env.CLIENT_URL.split(',').map(url => url.trim())
+  : [];
+
+const allowedOrigins = [...defaultOrigins, ...envOrigins];
 
 app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl)
     if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1) {
+    if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.vercel.app')) {
       callback(null, true);
     } else {
       callback(new Error('Not allowed by CORS'));
